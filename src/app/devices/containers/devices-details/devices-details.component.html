@@ -1,0 +1,52 @@
+<div class="container-wrapper">
+  <app-header [title]="'Devices'" [deviceName]="device?.name || 'no device'"></app-header>
+
+  <div class="content-wrapper">
+    <div class="form-wrapper" *ngIf="device">
+      <form [formGroup]="form" class="details-form">
+        <label>Name</label>
+        <input
+          [class.mb-24]="!form.invalid"
+          formControlName="name"
+          placeholder="" />
+        <mat-error *ngIf="form.invalid" class="mb-24">Please enter a name</mat-error>
+
+        <label>Tags</label>
+        <mat-chip-grid #chipGrid aria-label="Enter fruits" formControlName="tags" class="mb-24">
+          <mat-chip-row *ngFor="let tag of tags"
+                        (removed)="remove(tag)"
+                        [editable]="true"
+                        (edited)="edit(tag, $event)"
+                        [aria-description]="'press enter to edit ' + tag">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          <input placeholder="New tag ..."
+                 [matChipInputFor]="chipGrid"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 (matChipInputTokenEnd)="add($event)"/>
+        </mat-chip-grid>
+
+        <label>Description</label>
+        <textarea
+          formControlName="description"
+          placeholder=""></textarea>
+      </form>
+
+      <div class="flex-row align-center-justify-start actions-wrapper">
+        <button mat-raised-button (click)="close()">
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save(form.value)">
+          Save
+        </button>
+      </div>
+    </div>
+    <div class="no-device" *ngIf="!device">
+      <h2>Device is not exist</h2>
+    </div>
+  </div>
+</div>
